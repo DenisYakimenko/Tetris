@@ -10,7 +10,8 @@ public class GameTetris {
     final int ARC_RADIUS = 6;
     final int FIELD_WIDTH = 10; // in block
     final int FIELD_HEIGHT = 18;
-    final int START_LOCATION = 180;
+    final int START_LOCATION_X = 600;
+    final int START_LOCATION_Y = 180;
     final int FIELD_DX = 7;
     final int FIELD_DY = 26;
     final int LEFT = 37;
@@ -59,11 +60,125 @@ public class GameTetris {
     }
 
     void go(){
+        frame = new JFrame(TITLE_OF_PROGRAM);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //позволяет завершать программу нажатием на крестик
+        frame.setSize(FIELD_WIDTH*BLOCK_SIZE+FIELD_DX, FIELD_HEIGHT*BLOCK_SIZE+FIELD_DY);
+        frame.setLocation(START_LOCATION_X, START_LOCATION_Y);
+        frame.setResizable(false); // запрет на изменение размера окна
+        canvasPanel.setBackground(Color.black);
+
+        frame.addKeyListener(new KeyAdapter() {
+                                 public void keyPressed(KeyEvent e) {
+                                     if (!gameOver) {
+                                         if (e.getKeyCode() == DOWN) figure.drop();
+                                         if (e.getKeyCode() == UP) figure.rotate();
+                                         if (e.getKeyCode() == LEFT || e.getKeyCode() == RIGHT) figure.move(e.getKeyCode());
+                                     }
+                                     canvasPanel.repaint();
+                                 }
+                             });
+
+
+           frame.getContentPane().add(BorderLayout.CENTER, canvasPanel);
+           frame.setVisible(true);
+
+           Arrays.fill(mine[FIELD_HEIGHT], 1);
+
+           while (!gameOver){
+               try{
+                   Thread.sleep(SHOW_DELAY);
+               }catch (Exception e){e.printStackTrace();}
+               canvasPanel.repaint();
+               if(figure.isTouchGround()){
+                   figure.leaveOnTheGround();
+                   checkFilling();
+                   figure = new Figure();
+                   gameOver = figure.isCrossGround();
+               }else{
+                   figure.stepDown();
+               }
+           }
+
+    }
+
+    // метод проверяет заполнились ли какие нибудь линии
+    void checkFilling(){
 
     }
 
     class Figure{
 
+        boolean isTouchGround(){
+
+            return false;
+        }
+
+        boolean isCrossGround(){
+
+            return false;
+        }
+
+        void leaveOnTheGround(){
+
+        }
+
+        void stepDown(){
+
+        }
+
+        void drop(){
+
+        }
+
+        void move(int direction){
+
+        }
+
+        void rotate(){
+
+        }
+
     }
 
+    class Block{
+        private int x, y;
+
+        public Block(int x, int y){
+            setX(x);
+            setY(y);
+        }
+
+
+
+        public void setX(int x) {
+            this.x = x;
+        }
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        public int getY() {
+            return y;
+        }
+        public int getX() {
+            return x;
+        }
+
+        void paint(Graphics g, int color){
+            g.setColor(new Color(color));
+            g.drawRoundRect(x*BLOCK_SIZE+1, y*BLOCK_SIZE+1, BLOCK_SIZE-2, BLOCK_SIZE-2, ARC_RADIUS,
+                    ARC_RADIUS);
+        }
+
+
+    }
+
+    public class Canvas extends JPanel{
+        @Override
+        public  void paint(Graphics g){
+            super.paint(g);
+        }
+    }
 }
+
+
