@@ -216,7 +216,7 @@ public class GameTetris {
                     }
             figure.paint(g);
         }
-    }
+     }
 }
 
 
