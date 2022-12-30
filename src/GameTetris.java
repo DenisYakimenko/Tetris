@@ -108,7 +108,30 @@ public class GameTetris {
 
     class Figure{
 
+        private ArrayList<Block> figure = new ArrayList<Block>();
+        private int [][] shape = new int [4][4];
+        private int type, size, color;
+        private int x = 3, y = 0;
+
+        Figure(){
+            type = random.nextInt(SHAPES.length);
+            size = SHAPES[type][4][0];
+            color = SHAPES[type][4][1];
+            if (size == 4) y =-1;
+            for(int i =0; i < size; i++)
+                System.arraycopy(SHAPES[type][i], 0, shape[i], 0, SHAPES[type][i].length);
+            createFormShape();
+        }
+
+        void createFormShape(){
+            for (int x=0; x<size; x++)
+                for(int y=0; y<size; y++)
+                    if (shape[y][x] == 1) figure.add(new Block(x+this.x, y+ this.y));
+        }
+
         boolean isTouchGround(){
+
+            for (Block block:figure) if(mine[block.getX()+1][block.getX()]>0) return true;
 
             return false;
         }
@@ -119,11 +142,14 @@ public class GameTetris {
         }
 
         void leaveOnTheGround(){
+            for (Block block:figure) mine[block.getX()][block.getX()] = color;
 
         }
 
         void stepDown(){
 
+            for (Block block:figure)block.setY(block.getY()+1);
+            y++;
         }
 
         void drop(){
@@ -136,6 +162,10 @@ public class GameTetris {
 
         void rotate(){
 
+        }
+
+        void paint(Graphics g){
+            for (Block block:figure)block.paint(g,color);
         }
 
     }
@@ -173,10 +203,18 @@ public class GameTetris {
 
     }
 
-    public class Canvas extends JPanel{
+    public class Canvas extends JPanel {
         @Override
-        public  void paint(Graphics g){
+        public void paint(Graphics g) {
             super.paint(g);
+            for (int x = 0; x<FIELD_WIDTH; x++)
+                for(int y = 0; y < FIELD_HEIGHT; y++)
+                    if (mine[y][x]>0){
+                        g.setColor(new Color(mine[y][x]));
+                        g.fill3DRect(x*BLOCK_SIZE+1, y*BLOCK_SIZE+1, BLOCK_SIZE-1,
+                                BLOCK_SIZE-1, true);
+                    }
+            figure.paint(g);
         }
     }
 }
