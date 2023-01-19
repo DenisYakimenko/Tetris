@@ -18,7 +18,7 @@ class GameTetris extends JFrame{
     final int UP = 38;
     final int RIGHT = 39;
     final int DOWN = 40;
-    final int SHOW_DELAY = 200; //задержка анимации
+    final int SHOW_DELAY = 400; //задержка анимации
     final int [][][] SHAPES = {
             {{0,0,0,0}, {1,1,1,1}, {0,0,0,0}, {0,0,0,0}, {4, 0x00f0f0}}, // I
             {{0,0,0,0}, {0,1,1,0}, {0,1,1,0}, {0,0,0,0}, {4, 0xf0f000}}, // O
@@ -130,12 +130,9 @@ class GameTetris extends JFrame{
     class Figure{
 
         private ArrayList<Block> figure = new ArrayList<Block>();
-        private  int [][] shape = new int [4][4];
-        private  int type;
-        private  int size;
-        private  int color;
-        private  int x = 3;
-        private int y = 0;
+        private int[][] shape = new int[4][4];
+        private int type, size, color;
+        private int x = 3, y = 0; // starting left up corner
 
         Figure(){
             type = random.nextInt(SHAPES.length);
@@ -144,14 +141,16 @@ class GameTetris extends JFrame{
             if (size == 4) y =-1;
             for(int i =0; i < size; i++)
                 System.arraycopy(SHAPES[type][i], 0, shape[i], 0, SHAPES[type][i].length);
-            createFormShape();
+            createFromShape();
         }
 
-        void createFormShape(){
+        void createFromShape(){
             for (int x=0; x<size; x++)
                 for(int y=0; y<size; y++)
                     if (shape[y][x] == 1) figure.add(new Block(x+this.x, y+ this.y));
         }
+
+
 
         boolean isTouchGround(){
 
@@ -229,17 +228,13 @@ class GameTetris extends JFrame{
                     }
         }
 
-        void rotate(){
+        void rotate() {
             rotateShape(RIGHT);
             if (!isWrongPosition()) {
                 figure.clear();
                 createFromShape();
             } else
                 rotateShape(LEFT);
-
-        }
-
-        private void createFromShape() {
         }
 
 
@@ -248,7 +243,6 @@ class GameTetris extends JFrame{
         }
 
     }
-
 
 
     class Block{
